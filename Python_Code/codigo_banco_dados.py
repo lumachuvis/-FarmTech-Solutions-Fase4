@@ -1,68 +1,66 @@
+# Importação de bibliotecas
+import pandas as pd
+import numpy as np
 import mysql.connector
-import random
-import time
-from datetime import datetime
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report
+import streamlit as st
 
-# Conectar ao banco de dados MySQL
+# Conexão com o banco de dados
 conexao = mysql.connector.connect(
     host="localhost",
     user="root",  # Substitua pelo seu usuário
-    password="03071993Edu",  # Substitua pela sua senha
-    database="FarmTech"  # Nome do banco de dados
+    password="sua_senha",  # Substitua pela sua senha
+    database="FarmTech"
 )
 cursor = conexao.cursor()
 
+# Consulta SQL para obter os dados
+sql_query = "SELECT nutriente_P, nutriente_K, nivel_ph, umidade_solo, temperatura, irrigacao FROM dados_irrigacao"
+df = pd.read_sql(sql_query, conexao)
 
-# Função para inserir dados no banco de dados
-def inserir_dados(nutriente_P, nutriente_K, nivel_ph, umidade_solo, temperatura, irrigacao):
-    sql = """
-    INSERT INTO dados_irrigacao (nutriente_P, nutriente_K, nivel_ph, umidade_solo, temperatura, irrigacao)
-    VALUES (%s, %s, %s, %s, %s, %s)
-    """
-    dados = (nutriente_P, nutriente_K, nivel_ph, umidade_solo, temperatura, irrigacao)
-    cursor.execute(sql, dados)
-    conexao.commit()
-    print("Dados inseridos com sucesso:", dados)
+# Preprocessamento de dados
+X = df.drop("irrigacao", axis=1)
+y = df["irrigacao"]
 
+# Divisão dos dados
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-# Função para gerar dados aleatórios simulados
-def gerar_dados():
-    # Nutrientes P e K simulados como booleanos (True = Presente, False = Ausente)
-    nutriente_P = random.choice([True, False])
-    nutriente_K = random.choice([True, False])
+# Treinamento do modelo
+modelo = RandomForestClassifier(random_state=42)
+modelo.fit(X_train, y_train)
 
-    # Nível de pH simulado com variação entre 0 e 14
-    nivel_ph = round(random.uniform(0, 14), 2)
+# Avaliação do modelo
+predicoes = modelo.predict(X_test)
+acuracia = accuracy_score(y_test, predicoes)
 
-    # Umidade do solo com variação entre 0 e 100%
-    umidade_solo = round(random.uniform(20, 80), 2)  # Ajuste conforme necessário
+# Interface Streamlit
+st.title("Sistema de Irrigação Inteligente")
+st.subheader("Modelagem Preditiva usando Scikit-learn")
 
-    # Temperatura simulada com variação entre 15 e 35 graus Celsius
-    temperatura = round(random.uniform(15, 35), 1)
+# Formulário interativo
+st.sidebar.header("Insira os dados dos sensores:")
+nutriente_P = st.sidebar.selectbox("Nutriente P (Presente/Ausente)", [1, 0])
+nutriente_K = st.sidebar.selectbox("Nutriente K (Presente/Ausente)", [1, 0])
+nivel_ph = st.sidebar.slider("Nível de pH", 0.0, 14.0, 7.0)
+umidade_solo = st.sidebar.slider("Umidade do Solo (%)", 0.0, 100.0, 50.0)
+temperatura = st.sidebar.slider("Temperatura (°C)", 15.0, 40.0, 25.0)
 
-    # Lógica simples para ativar ou desativar a irrigação
-    # Neste caso, a irrigação é ativada se a umidade estiver abaixo de 40% ou se pH for inferior a 5.5
-    irrigacao = (umidade_solo < 40 or nivel_ph < 5.5)
+# Predição com entrada personalizada
+dados_usuario = np.array([[nutriente_P, nutriente_K, nivel_ph, umidade_solo, temperatura]])
+resultado = modelo.predict(dados_usuario)[0]
+estado_irrigacao = "Ativada" if resultado else "Desativada"
 
-    return nutriente_P, nutriente_K, nivel_ph, umidade_solo, temperatura, irrigacao
+# Exibição dos resultados
+st.write(f"Acurácia do Modelo: {acuracia * 100:.2f}%")
+st.write("### Previsão de Irrigação:")
+st.write(f"Irrigação: **{estado_irrigacao}**")
 
+# Relatório detalhado
+st.write("### Relatório de Classificação:")
+st.text(classification_report(y_test, predicoes))
 
-# Loop para inserir dados a cada intervalo
-try:
-    while True:
-        # Gerar dados aleatórios
-        dados_sensores = gerar_dados()
-
-        # Inserir dados no banco de dados
-        inserir_dados(*dados_sensores)
-
-        # Aguardar 5 segundos antes da próxima inserção
-        time.sleep(5)
-
-except KeyboardInterrupt:
-    print("Encerrando a gravação de dados.")
-
-finally:
-    # Fechar a conexão com o banco de dados
-    cursor.close()
-    conexao.close()
+# Fechar a conexão
+cursor.close()
+conexao.close()
