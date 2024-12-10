@@ -1,83 +1,70 @@
-# Projeto de Irrigação Inteligente - FarmTech Solutions
+FIAP - Faculdade de Informática e Administração Paulista
+<p align="center"> <a href= "https://www.fiap.com.br/"><img src="assets/logo-fiap.png" alt="FIAP - Faculdade de Informática e Administração Paulista" border="0" width=40% height=40%></a> </p> <br>
+Projeto de Irrigação Inteligente - FarmTech Solutions
+Nome do grupo
 
-## Descrição do Projeto
+FarmTech Solutions
+👨‍🎓 Integrantes:
 
-Este projeto foi desenvolvido como parte do sistema de gestão agrícola da *FarmTech Solutions*. O objetivo é criar um sistema de irrigação automatizado e inteligente que monitore a umidade do solo, os níveis de nutrientes (P e K) e o pH do solo, ajustando automaticamente a irrigação com base nas condições do solo.
+    <a href="https://www.linkedin.com/in/luma-x">Luma Santos de Oliveira</a>
+    <a href="https://www.linkedin.com/company/inova-fusca">Celeste Santos</a>
+    <a href="https://www.linkedin.com/company/inova-fusca">Wellington Nascimento</a>
+ 
 
-O sistema utiliza o ESP32 para monitorar sensores e controlar um relé que representa a bomba d'água. Os dados dos sensores são armazenados em um banco de dados MySQL, permitindo uma análise histórica das condições do solo e do estado da irrigação.
+👩‍🏫 Professores:
+Tutor(a)
 
-## Componentes e Simulação no Wokwi
+    <a href="https://www.linkedin.com/company/inova-fusca">Lucas Gomes Moreira</a>
 
-Como o Wokwi não possui sensores específicos para agricultura, usamos os seguintes componentes para representar os sensores necessários:
+Coordenador(a)
 
-- *Botões*: Representam os sensores de nutrientes P e K. Um botão pressionado indica a presença do nutriente, enquanto um botão não pressionado indica ausência.
-- *LDR (Light Dependent Resistor)*: Representa o sensor de pH. Valores analógicos do LDR simulam a variação de pH do solo (de 0 a 14).
-- *DHT22*: Sensor de umidade do solo e temperatura.
-- *Relé*: Representa a bomba d'água que liga/desliga conforme a necessidade de irrigação.
+    <a href="https://www.linkedin.com/company/inova-fusca">André Godoi Chiovato</a>
 
-## Lógica de Controle da Irrigação
+📜 Descrição
 
-A lógica para ligar/desligar a irrigação é baseada nos seguintes critérios:
-- *Nutrientes*: Se um dos nutrientes (P ou K) estiver ausente (botão não pressionado), a irrigação é ativada.
-- *pH*: Se o nível de pH for inferior a 5.5, o sistema considera o solo ácido e ativa a irrigação para balancear.
-- *Umidade do Solo*: Se a umidade do solo estiver abaixo de 40%, a irrigação é ativada.
-- *Temperatura*: A temperatura é monitorada, mas não afeta a decisão de irrigação neste projeto.
+Este projeto visa desenvolver um sistema de irrigação inteligente para gestão agrícola. Utilizando o microcontrolador ESP32, sensores de umidade, pH e nutrientes do solo (P e K), o sistema ajusta automaticamente a irrigação conforme as condições do solo.
 
-Esses critérios podem ser ajustados conforme a necessidade agrícola específica.
+O sistema armazena dados em um banco de dados MySQL, permitindo análise histórica e melhorias contínuas no gerenciamento agrícola. A lógica de irrigação baseia-se nos níveis de umidade, pH e presença de nutrientes, ativando a bomba d’água conforme necessário.
 
-## Configuração do Circuito no Wokwi
+📁 Estrutura de pastas
 
-1. *Botão 1 (Nutriente P)*: Conectado ao pino GPIO 12 do ESP32.
-2. *Botão 2 (Nutriente K)*: Conectado ao pino GPIO 13 do ESP32.
-3. *LDR (pH)*: Conectado ao pino GPIO 34 (entrada analógica) do ESP32.
-4. *DHT22 (Umidade e Temperatura)*: Conectado ao pino GPIO 15 do ESP32.
-5. *Relé (Bomba de Água)*: Conectado ao pino GPIO 14 do ESP32.
+    .github: Configurações específicas do GitHub.
+    assets: Imagens e elementos não estruturados.
+    config: Arquivos de configuração do projeto.
+    document: Documentos do projeto e anexos complementares.
+    scripts: Scripts auxiliares como deploy e backups.
+    src: Código-fonte principal do projeto.
+    README.md: Guia e documentação geral do projeto (este arquivo).
 
-O circuito completo está disponível no Wokwi.com e pode ser simulado com os componentes acima.
+🔧 Como executar o código
+Pré-requisitos:
 
-## Código do ESP32 em MicroPython
+    IDE: Thonny, VSCode ou IDE compatível com MicroPython.
+    Microcontrolador: ESP32.
+    Simulador: Wokwi (para simulações).
+    Bibliotecas: dht, machine, time.
 
-O código abaixo é usado no ESP32 para monitorar os sensores e controlar o relé. Ele lê os valores dos sensores e decide quando ligar ou desligar a irrigação. 
+Instalação e Execução:
 
-```python
-from machine import Pin, ADC
-from time import sleep
-import dht
-import urandom  # Para gerar valores aleatórios
+    Clone o repositório:
 
-# Configuração dos pinos
-botao_P = Pin(12, Pin.IN, Pin.PULL_UP)
-botao_K = Pin(13, Pin.IN, Pin.PULL_UP)
-ldr = ADC(Pin(34))
-ldr.atten(ADC.ATTN_11DB)
-sensor_umidade = dht.DHT22(Pin(15))
-rele = Pin(14, Pin.OUT)
+    git clone https://github.com/usuario/projeto-irrigacao.git
+    cd projeto-irrigacao/src
 
-def ler_sensores():
-    nutriente_P = not botao_P.value()
-    nutriente_K = not botao_K.value()
-    nivel_ph = (ldr.read() * (14 / 4095)) + (urandom.getrandbits(4) - 8) * 0.1
-    nivel_ph = max(0, min(14, nivel_ph))
-    sensor_umidade.measure()
-    umidade_solo = sensor_umidade.humidity() + (urandom.getrandbits(4) - 8) * 0.1
-    umidade_solo = max(0, min(100, umidade_solo))
-    temperatura = sensor_umidade.temperature()
-    return nutriente_P, nutriente_K, nivel_ph, umidade_solo, temperatura
+    Configure o ambiente:
+        Conecte o ESP32 à IDE.
+        Carregue o arquivo principal para o ESP32.
 
-def logica_irrigacao(nutriente_P, nutriente_K, nivel_ph, umidade_solo):
-    if not nutriente_P or not nutriente_K or nivel_ph < 5.5 or umidade_solo < 40:
-        rele.value(1)
-        print("Irrigação ativada")
-    else:
-        rele.value(0)
-        print("Irrigação desativada")
+    Execute a simulação no Wokwi.com se necessário.
 
-while True:
-    nutriente_P, nutriente_K, nivel_ph, umidade_solo, temperatura = ler_sensores()
-    print("Nutriente P:", "Presente" if nutriente_P else "Ausente")
-    print("Nutriente K:", "Presente" if nutriente_K else "Ausente")
-    print("Nível de pH:", round(nivel_ph, 2))
-    print("Umidade do Solo:", round(umidade_solo, 2))
-    print("Temperatura:", temperatura)
-    logica_irrigacao(nutriente_P, nutriente_K, nivel_ph, umidade_solo)
-    sleep(5)
+🗃 Histórico de lançamentos
+
+    0.5.0 - XX/XX/2024 - Ajuste na lógica de irrigação.
+    0.4.0 - XX/XX/2024 - Implementação do banco de dados MySQL.
+    0.3.0 - XX/XX/2024 - Adição de novos sensores.
+    0.2.0 - XX/XX/2024 - Configuração inicial do projeto.
+    0.1.0 - XX/XX/2024 - Configuração básica do ESP32.
+
+📋 Licença
+
+<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/agodoi/template">MODELO GIT FIAP</a> por <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://fiap.com.br">Fiap</a> está licenciado sobre <a href="http://creativecommons.org/licenses/by/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">Attribution 4.0 International</a>.</p>
