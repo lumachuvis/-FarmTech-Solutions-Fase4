@@ -1,56 +1,67 @@
-from machine import Pin, ADC
+from machine import Pin, ADC, I2C
 from time import sleep
 import dht
-import urandom  # Para gerar valores aleatórios
+import urandom
+from lcd_api import LcdApi
+from i2c_lcd import I2cLcd
+
+# Configuração do I2C para o LCD
+i2c = I2C(scl=Pin(22), sda=Pin(21), freq=400000)
+lcd = I2cLcd(i2c, 0x27, 2, 16)  # Endereço I2C e configuração do LCD
 
 # Configuração dos pinos
-botao_P = Pin(12, Pin.IN, Pin.PULL_UP)  # Nutriente P
-botao_K = Pin(13, Pin.IN, Pin.PULL_UP)  # Nutriente K
-ldr = ADC(Pin(34))                      # LDR para simular pH
-ldr.atten(ADC.ATTN_11DB)                # Aumenta o range de leitura do LDR
-sensor_umidade = dht.DHT22(Pin(15))     # Sensor de umidade DHT22
-rele = Pin(14, Pin.OUT)                 # Relé para controle da bomba d'água
+botao_P = Pin(12, Pin.IN, Pin.PULL_UP)
+botao_K = Pin(13, Pin.IN, Pin.PULL_UP)
+ldr = ADC(Pin(34))
+ldr.atten(ADC.ATTN_11DB)
+sensor_umidade = dht.DHT22(Pin(15))
+rele = Pin(14, Pin.OUT)
 
+# Função para ler os sensores
 def ler_sensores():
-    # Leitura dos botões para P e K (True se botão não pressionado, False se pressionado)
-    nutriente_P = not botao_P.value()  # Botão pressionado indica presença de P
-    nutriente_K = not botao_K.value()  # Botão pressionado indica presença de K
+    nutriente_P = not botao_P.value()
+    nutriente_K = not botao_K.value()
 
-    # Leitura do LDR (representando o pH) com pequena variação aleatória
     nivel_ph = (ldr.read() * (14 / 4095)) + (urandom.getrandbits(4) - 8) * 0.1
-    nivel_ph = max(0, min(14, nivel_ph))  # Garantir que o pH fique na escala de 0 a 14
+    nivel_ph = max(0, min(14, nivel_ph))
 
-    # Leitura de umidade com variação simulada
     sensor_umidade.measure()
     umidade_solo = sensor_umidade.humidity() + (urandom.getrandbits(4) - 8) * 0.1
-    umidade_solo = max(0, min(100, umidade_solo))  # Garantir que a umidade fique na escala de 0 a 100
+    umidade_solo = max(0, min(100, umidade_solo))
 
-    temperatura = sensor_umidade.temperature()  # Temperatura permanece constante para simplificar
+    temperatura = sensor_umidade.temperature()
 
     return nutriente_P, nutriente_K, nivel_ph, umidade_solo, temperatura
 
+# Função de decisão de irrigação
 def logica_irrigacao(nutriente_P, nutriente_K, nivel_ph, umidade_solo):
-    # Lógica para acionar o sistema de irrigação
     if not nutriente_P or not nutriente_K or nivel_ph < 5.5 or umidade_solo < 40:
-        rele.value(1)  # Liga o relé para irrigação
-        print("Irrigação ativada")
+        rele.value(1)
+        lcd.putstr("Irrigação: Ligada")
     else:
-        rele.value(0)  # Desliga o relé
-        print("Irrigação desativada")
+        rele.value(0)
+        lcd.putstr("Irrigação: Desl.")
 
+# Função para exibir os dados no LCD
+def exibir_dados(nutriente_P, nutriente_K, nivel_ph, umidade_solo, temperatura):
+    lcd.clear()
+    lcd.putstr(f"P:{'Sim' if nutriente_P else 'Não'} K:{'Sim' if nutriente_K else 'Não'}\n")
+    lcd.putstr(f"pH:{nivel_ph:.1f} Um:{umidade_solo:.1f}%\n")
+    lcd.putstr(f"Temp:{temperatura}C")
+
+# Loop principal
 while True:
-    # Lê os valores dos sensores
     nutriente_P, nutriente_K, nivel_ph, umidade_solo, temperatura = ler_sensores()
 
-    # Exibe os valores lidos no monitor serial
-    print("Nutriente P:", "Presente" if nutriente_P else "Ausente")
-    print("Nutriente K:", "Presente" if nutriente_K else "Ausente")
-    print("Nível de pH:", round(nivel_ph, 2))
-    print("Umidade do Solo:", round(umidade_solo, 2))
-    print("Temperatura:", temperatura)
+    # Exibir no monitor serial para depuração
+    print(f"Nutriente P: {'Presente' if nutriente_P else 'Ausente'}")
+    print(f"Nutriente K: {'Presente' if nutriente_K else 'Ausente'}")
+    print(f"Nível de pH: {nivel_ph:.2f}")
+    print(f"Umidade do Solo: {umidade_solo:.2f}%")
+    print(f"Temperatura: {temperatura}C")
 
-    # Decide se liga ou desliga a irrigação
+    # Exibir no LCD e gerenciar irrigação
+    exibir_dados(nutriente_P, nutriente_K, nivel_ph, umidade_solo, temperatura)
     logica_irrigacao(nutriente_P, nutriente_K, nivel_ph, umidade_solo)
 
-    # Aguardar antes da próxima leitura
     sleep(5)
