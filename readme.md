@@ -1,5 +1,5 @@
 FIAP - Faculdade de Informática e Administração Paulista
-<p align="center"> <a href= "https://www.fiap.com.br/"><img src="assets/logo-fiap.png" alt="FIAP - Faculdade de Informática e Administração Paulista" border="0" width=40% height=40%></a> </p> <br>
+<p align="center"> <a href= "https://www.fiap.com.br/"><img src="Images/logo-fiap.png" alt="FIAP - Faculdade de Informática e Administração Paulista" border="0" width=40% height=40%></a> </p> <br>
 Projeto de Irrigação Inteligente - FarmTech Solutions
 Nome do grupo
 
@@ -20,42 +20,73 @@ Coordenador(a)
 
     <a href="https://www.linkedin.com/company/inova-fusca">André Godoi Chiovato</a>
 
-📜 Descrição
+📋 Descrição do Projeto
 
-Este projeto visa desenvolver um sistema de irrigação inteligente para gestão agrícola. Utilizando o microcontrolador ESP32, sensores de umidade, pH e nutrientes do solo (P e K), o sistema ajusta automaticamente a irrigação conforme as condições do solo.
+O projeto FarmTech Solutions é uma solução integrada para monitoramento e controle inteligente de sistemas de irrigação agrícola. Ele combina um microcontrolador ESP32, sensores ambientais, um banco de dados relacional e uma interface web interativa para tomada de decisões com base em Machine Learning.
+🚀 Melhorias Implementadas
+🔧 Arquitetura de Software e Banco de Dados
 
-O sistema armazena dados em um banco de dados MySQL, permitindo análise histórica e melhorias contínuas no gerenciamento agrícola. A lógica de irrigação baseia-se nos níveis de umidade, pH e presença de nutrientes, ativando a bomba d’água conforme necessário.
+    Banco de Dados Normalizado:
+        Tabelas organizadas para melhor escalabilidade e desempenho.
+        Registros categorizados em tabelas específicas:
+            sensores: Cadastro de sensores instalados.
+            registros_monitoramento: Leituras dos sensores ao longo do tempo.
+            controle_irrigacao: Registro de ativações/desativações do sistema de irrigação.
+            nutrientes_aplicados: Histórico de aplicação de nutrientes.
+            logs_alertas: Registro de falhas e alertas críticos.
 
-📁 Estrutura de pastas
+    Triggers e Procedimentos Armazenados:
+        Automatização de cálculos de média e registros de alertas via procedimentos armazenados.
 
-    .github: Configurações específicas do GitHub.
-    assets: Imagens e elementos não estruturados.
-    config: Arquivos de configuração do projeto.
-    document: Documentos do projeto e anexos complementares.
-    scripts: Scripts auxiliares como deploy e backups.
-    src: Código-fonte principal do projeto.
-    README.md: Guia e documentação geral do projeto (este arquivo).
+📡 Microcontrolador ESP32
 
-🔧 Como executar o código
-Pré-requisitos:
+    Gerenciamento de Sensores:
+        Leitura contínua de sensores de umidade, pH e temperatura.
+        Exibição dos dados em um display LCD conectado ao ESP32.
 
-    IDE: Thonny, VSCode ou IDE compatível com MicroPython.
-    Microcontrolador: ESP32.
-    Simulador: Wokwi (para simulações).
-    Bibliotecas: dht, machine, time.
+    Automação de Irrigação:
+        Lógica de decisão melhorada para ativação/desativação automática do sistema de irrigação.
 
-Instalação e Execução:
+📊 Modelagem Preditiva e Interface Web
 
-    Clone o repositório:
+    Predição Inteligente:
+        Modelo de aprendizado de máquina usando Scikit-learn.
+        Predição em tempo real de necessidade de irrigação.
 
-    git clone https://github.com/usuario/projeto-irrigacao.git
-    cd projeto-irrigacao/src
+    Interface Interativa:
+        Interface desenvolvida em Streamlit.
+        Exibição gráfica de dados e previsões para o usuário final.
 
-    Configure o ambiente:
-        Conecte o ESP32 à IDE.
-        Carregue o arquivo principal para o ESP32.
+📚 Tecnologias Utilizadas
+Tecnologia	Descrição
+ESP32	Microcontrolador principal
+Python	Back-end e análise de dados
+MySQL	Banco de dados relacional
+Streamlit	Interface web interativa
+Scikit-learn	Modelagem preditiva
+MicroPython	Programação do ESP32
+⚙️ Como Configurar e Executar
+1. Configuração do Banco de Dados
 
-    Execute a simulação no Wokwi.com se necessário.
+    Instale o MySQL Server.
+    Execute o arquivo database_setup.sql para criar o banco de dados e suas tabelas.
+    Configure suas credenciais de acesso ao banco no código-fonte.
+
+2. Execução do ESP32
+
+    Suba o código para o ESP32 usando a IDE Arduino ou similar.
+    Conecte os sensores e o display LCD conforme o esquema elétrico fornecido.
+
+3. Interface Web e Modelagem Preditiva
+
+    Instale as dependências:
+
+pip install -r requirements.txt
+
+Execute a aplicação Streamlit:
+
+streamlit run app.py
+
 
 🗃 Histórico de lançamentos
 
