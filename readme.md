@@ -1,29 +1,35 @@
-FIAP - Faculdade de Informática e Administração Paulista
-<p align="center"> <a href= "https://www.fiap.com.br/"><img src="Images/logo-fiap.png" alt="FIAP - Faculdade de Informática e Administração Paulista" border="0" width=40% height=40%></a> </p> <br>
-Projeto de Irrigação Inteligente - FarmTech Solutions
-Nome do grupo
+# FIAP - Faculdade de Informática e Administração Paulista
 
-FarmTech Solutions
-👨‍🎓 Integrantes:
+<p align="center">
+<a href= "https://www.fiap.com.br/"><img src="Images/logo-fiap.png" alt="FIAP - Faculdade de Informática e Admnistração Paulista" border="0" width=40% height=40%></a>
+</p>
 
-    <a href="https://www.linkedin.com/in/luma-x">Luma Santos de Oliveira</a>
-    <a href="https://www.linkedin.com/company/inova-fusca">Celeste Santos</a>
-    <a href="https://www.linkedin.com/company/inova-fusca">Wellington Nascimento</a>
+<br>
+
+# FarmTech Solutions - Fase 4
+
+## Grupo 10
+
+## 👨‍🎓 Integrantes: 
+
+- <a href="https://www.linkedin.com/in/luma-x">Luma Santos de Oliveira</a>
+- <a href="https://www.linkedin.com/company/inova-fusca">Celeste Santos</a>
+- <a href="https://www.linkedin.com/company/inova-fusca">Wellington Nascimento</a>
  
 
-👩‍🏫 Professores:
-Tutor(a)
+## 👩‍🏫 Professores:
+### Tutor(a)
+- <a href="https://www.linkedin.com/company/inova-fusca">Lucas Gomes Moreira</a>
 
-    <a href="https://www.linkedin.com/company/inova-fusca">Lucas Gomes Moreira</a>
+### Coordenador(a)
 
-Coordenador(a)
+- <a href="https://www.linkedin.com/company/inova-fusca">André Godoi Chiovato</a>
 
-    <a href="https://www.linkedin.com/company/inova-fusca">André Godoi Chiovato</a>
-
-📋 Descrição do Projeto
+## 📋 Descrição do Projeto
 
 O projeto FarmTech Solutions é uma solução integrada para monitoramento e controle inteligente de sistemas de irrigação agrícola. Ele combina um microcontrolador ESP32, sensores ambientais, um banco de dados relacional e uma interface web interativa para tomada de decisões com base em Machine Learning.
-🚀 Melhorias Implementadas
+
+## 🚀 Melhorias Implementadas
 🔧 Arquitetura de Software e Banco de Dados
 
     Banco de Dados Normalizado:
@@ -57,7 +63,7 @@ O projeto FarmTech Solutions é uma solução integrada para monitoramento e con
         Interface desenvolvida em Streamlit.
         Exibição gráfica de dados e previsões para o usuário final.
 
-📚 Tecnologias Utilizadas
+## 📚 Tecnologias Utilizadas
 Tecnologia	Descrição
 ESP32	Microcontrolador principal
 Python	Back-end e análise de dados
@@ -65,7 +71,8 @@ MySQL	Banco de dados relacional
 Streamlit	Interface web interativa
 Scikit-learn	Modelagem preditiva
 MicroPython	Programação do ESP32
-⚙️ Como Configurar e Executar
+
+## ⚙️ Como Configurar e Executar
 1. Configuração do Banco de Dados
 
     Instale o MySQL Server.
@@ -88,7 +95,7 @@ Execute a aplicação Streamlit:
 streamlit run app.py
 
 
-🗃 Histórico de lançamentos
+## 🗃 Histórico de lançamentos
 
     0.5.0 - XX/XX/2024 - Ajuste na lógica de irrigação.
     0.4.0 - XX/XX/2024 - Implementação do banco de dados MySQL.
@@ -96,6 +103,6 @@ streamlit run app.py
     0.2.0 - XX/XX/2024 - Configuração inicial do projeto.
     0.1.0 - XX/XX/2024 - Configuração básica do ESP32.
 
-📋 Licença
+## 📋 Licença
 
 <img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/agodoi/template">MODELO GIT FIAP</a> por <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://fiap.com.br">Fiap</a> está licenciado sobre <a href="http://creativecommons.org/licenses/by/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">Attribution 4.0 International</a>.</p>
